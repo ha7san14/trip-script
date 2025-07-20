@@ -1,4 +1,4 @@
-package com.tripscript.app.City.model;
+package com.tripscript.app.city.model;
 
 import jakarta.persistence.*;
 import lombok.Data;

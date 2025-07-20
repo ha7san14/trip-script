@@ -1,6 +1,6 @@
-package com.tripscript.app.Trip.model;
+package com.tripscript.app.trip.model;
 
-import com.tripscript.app.City.model.City;
+import com.tripscript.app.city.model.City;
 import jakarta.persistence.*;
 import lombok.Data;
 
