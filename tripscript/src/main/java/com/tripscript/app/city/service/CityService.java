@@ -20,4 +20,22 @@ public class CityService {
     public City getCity(Long cityId) {
         return cityRepository.findById(cityId).orElse(null);
     }
+
+    public void deleteCity(Long cityId) {
+        cityRepository.deleteById(cityId);
+    }
+
+    public City createCity(City city) {
+        return cityRepository.save(city);
+    }
+
+    public City updateCity(Long cityId, City city) {
+        City existingCity = cityRepository.findById(cityId).orElseThrow(() -> new
+                RuntimeException("City not found with id " + cityId));
+        existingCity.setCityName(city.getCityName());
+        existingCity.setCountry(city.getCountry());
+        existingCity.setDetails(city.getDetails());
+
+        return cityRepository.save(existingCity);
+    }
 }
