@@ -3,11 +3,11 @@ package com.tripscript.app.trip.controller;
 import com.tripscript.app.constants.Endpoints;
 import com.tripscript.app.trip.model.Trip;
 import com.tripscript.app.trip.service.TripService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,10 +28,32 @@ public class TripController {
 
     @GetMapping(Endpoints.GET_TRIP)
     public ResponseEntity<Trip> getTrip(@PathVariable Long tripId) {
-        Trip trip = tripService.getTrip(tripId);
-        if(trip != null) {
-            return ResponseEntity.ok(trip);
+        Trip getTrip = tripService.getTrip(tripId);
+        if(getTrip != null) {
+            return ResponseEntity.ok(getTrip);
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping(Endpoints.DELETE_TRIP)
+    public ResponseEntity<Void> deleteTrip(@PathVariable Long tripId) {
+        Trip getTrip = tripService.getTrip(tripId);
+        if(getTrip != null) {
+            tripService.deleteTrip(tripId);
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping(Endpoints.CREATE_TRIP)
+    public ResponseEntity<Trip> createTrip(@Valid @RequestBody Trip trip) {
+        Trip newTrip = tripService.createTrip(trip);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newTrip);
+    }
+
+    @PutMapping(Endpoints.MODIFY_TRIP)
+    public ResponseEntity<Trip> modifyTrip(@PathVariable Long tripId,@Valid @RequestBody Trip trip) {
+        Trip existingTrip = tripService.updateTrip(tripId, trip);
+        return ResponseEntity.ok(existingTrip);
     }
 }

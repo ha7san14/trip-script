@@ -10,4 +10,7 @@ public class Endpoints {
     public static final String MODIFY_CITY = BASE_URL + "cities/{cityId}";
     public static final String GET_ALL_TRIPS = BASE_URL + "trips";
     public static final String GET_TRIP = BASE_URL + "trips/{tripId}";
+    public static final String CREATE_TRIP = BASE_URL + "trips";
+    public static final String DELETE_TRIP = BASE_URL + "trips/{tripId}";
+    public static final String MODIFY_TRIP = BASE_URL + "trips/{tripId}";
 }
