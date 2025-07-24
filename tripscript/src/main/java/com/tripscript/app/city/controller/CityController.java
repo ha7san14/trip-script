@@ -3,6 +3,7 @@ package com.tripscript.app.city.controller;
 import com.tripscript.app.city.model.City;
 import com.tripscript.app.city.service.CityService;
 import com.tripscript.app.constants.Endpoints;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,27 +28,30 @@ public class CityController {
     }
 
     @GetMapping(Endpoints.GET_CITY)
-    public ResponseEntity<City> getCity(@PathVariable Long cityId) {
-        City city = cityService.getCity(cityId);
-        if (city != null) {
+    public ResponseEntity<?> getCity(@PathVariable Long cityId) {
+        try {
+            City city = cityService.getCity(cityId);
             return ResponseEntity.ok(city);
-        } else {
-            return ResponseEntity.notFound().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
     @DeleteMapping(Endpoints.DELETE_CITY)
-    public ResponseEntity<Void> deleteCity(@PathVariable Long cityId) {
-        City getCity = cityService.getCity(cityId);
-        if (getCity != null) {
+    public ResponseEntity<?> deleteCity(@PathVariable Long cityId) {
+        try {
             cityService.deleteCity(cityId);
             return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-        return ResponseEntity.notFound().build();
     }
 
     @PostMapping(Endpoints.CREATE_CITY)
-    public ResponseEntity<City> createCity(@Valid @RequestBody City city) {
+    public ResponseEntity<?> createCity(@Valid @RequestBody City city) {
+        if(city.getCityId() > 0 ) {
+            return ResponseEntity.badRequest().body("City ID must not be provided. It is auto-generated.");
+        }
         City newCity = cityService.createCity(city);
         return ResponseEntity.status(HttpStatus.CREATED).body(newCity);
     }

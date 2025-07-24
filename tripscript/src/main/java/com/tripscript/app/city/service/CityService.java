@@ -2,6 +2,7 @@ package com.tripscript.app.city.service;
 
 import com.tripscript.app.city.model.City;
 import com.tripscript.app.city.repository.CityRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,11 +19,16 @@ public class CityService {
     }
 
     public City getCity(Long cityId) {
-        return cityRepository.findById(cityId).orElse(null);
+        return cityRepository.findById(cityId).orElseThrow(() ->
+                new EntityNotFoundException("City with ID " + cityId + " not found."));
     }
 
     public void deleteCity(Long cityId) {
+        if (!cityRepository.existsById(cityId)) {
+            throw new EntityNotFoundException("City with ID " + cityId + " not found.");
+        }
         cityRepository.deleteById(cityId);
+
     }
 
     public City createCity(City city) {
