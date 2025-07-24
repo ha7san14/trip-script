@@ -4,3 +4,15 @@ server:
 spring:
   application:
     name: TripScript
+  datasource:
+    url : jdbc:h2:mem:tripscriptdb
+    driver-class-name: org.h2.Driver
+    username: tripscript
+    password: tripscript
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
