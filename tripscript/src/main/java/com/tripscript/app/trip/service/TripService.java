@@ -1,5 +1,8 @@
 package com.tripscript.app.trip.service;
 
+import com.tripscript.app.city.model.City;
+import com.tripscript.app.city.service.CityService;
+import com.tripscript.app.trip.dto.TripRequestDto;
 import com.tripscript.app.trip.model.Trip;
 import com.tripscript.app.trip.repository.TripRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +15,7 @@ import java.util.List;
 public class TripService {
 
     private final TripRepository tripRepository;
+    private final CityService cityService;
 
     public List<Trip> getAllTrips() {
         return tripRepository.findAll();
@@ -25,7 +29,14 @@ public class TripService {
         tripRepository.deleteById(tripId);
     }
 
-    public Trip createTrip(Trip trip) {
+    public Trip createTrip(TripRequestDto tripRequestDto) {
+        City city = cityService.getCity(tripRequestDto.getCityId());
+        Trip trip = new Trip();
+        trip.setCity(city);
+        trip.setStartDate(tripRequestDto.getStartDate());
+        trip.setEndDate(tripRequestDto.getEndDate());
+        trip.setRating(tripRequestDto.getRating());
+        trip.setNotes(tripRequestDto.getNotes());
         return tripRepository.save(trip);
     }
 
