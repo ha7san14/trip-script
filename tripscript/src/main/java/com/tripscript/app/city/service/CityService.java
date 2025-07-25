@@ -36,8 +36,8 @@ public class CityService {
     }
 
     public City updateCity(Long cityId, City city) {
-        City existingCity = cityRepository.findById(cityId).orElseThrow(() -> new
-                RuntimeException("City not found with id " + cityId));
+        City existingCity = cityRepository.findById(cityId).orElseThrow(() ->
+                new EntityNotFoundException("City with ID " + cityId + " not found."));
         existingCity.setCityName(city.getCityName());
         existingCity.setCountry(city.getCountry());
         existingCity.setDetails(city.getDetails());

@@ -49,7 +49,7 @@ public class CityController {
 
     @PostMapping(Endpoints.CREATE_CITY)
     public ResponseEntity<?> createCity(@Valid @RequestBody City city) {
-        if(city.getCityId() > 0 ) {
+        if (city.getCityId() > 0) {
             return ResponseEntity.badRequest().body("City ID must not be provided. It is auto-generated.");
         }
         City newCity = cityService.createCity(city);
@@ -57,9 +57,13 @@ public class CityController {
     }
 
     @PutMapping(Endpoints.MODIFY_CITY)
-    public ResponseEntity<City> updateCity(@Valid @PathVariable Long cityId, @RequestBody City city) {
-        City existingCity = cityService.updateCity(cityId, city);
-        return ResponseEntity.ok(existingCity);
+    public ResponseEntity<?> updateCity(@Valid @PathVariable Long cityId, @RequestBody City city) {
+        try {
+            City updatedCity = cityService.updateCity(cityId, city);
+            return ResponseEntity.ok(updatedCity);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
 
     }
 }
