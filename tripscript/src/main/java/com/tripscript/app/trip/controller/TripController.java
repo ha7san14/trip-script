@@ -29,22 +29,24 @@ public class TripController {
     }
 
     @GetMapping(Endpoints.GET_TRIP)
-    public ResponseEntity<Trip> getTrip(@PathVariable Long tripId) {
-        Trip getTrip = tripService.getTrip(tripId);
-        if (getTrip != null) {
-            return ResponseEntity.ok(getTrip);
+    public ResponseEntity<?> getTrip(@PathVariable Long tripId) {
+        try {
+            Trip trip = tripService.getTrip(tripId);
+            return ResponseEntity.ok(trip);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping(Endpoints.DELETE_TRIP)
-    public ResponseEntity<Void> deleteTrip(@PathVariable Long tripId) {
+    public ResponseEntity<?> deleteTrip(@PathVariable Long tripId) {
         Trip getTrip = tripService.getTrip(tripId);
-        if (getTrip != null) {
+        try {
             tripService.deleteTrip(tripId);
             return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-        return ResponseEntity.notFound().build();
     }
 
     @PostMapping(Endpoints.CREATE_TRIP)
@@ -59,8 +61,12 @@ public class TripController {
     }
 
     @PutMapping(Endpoints.MODIFY_TRIP)
-    public ResponseEntity<Trip> modifyTrip(@PathVariable Long tripId, @Valid @RequestBody Trip trip) {
-        Trip existingTrip = tripService.updateTrip(tripId, trip);
-        return ResponseEntity.ok(existingTrip);
+    public ResponseEntity<?> modifyTrip(@PathVariable Long tripId, @Valid @RequestBody TripRequestDto tripRequestDto) {
+        try {
+            Trip existingTrip = tripService.updateTrip(tripId, tripRequestDto);
+            return ResponseEntity.ok(existingTrip);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }

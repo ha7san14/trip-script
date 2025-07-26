@@ -5,6 +5,7 @@ import com.tripscript.app.city.service.CityService;
 import com.tripscript.app.trip.dto.TripRequestDto;
 import com.tripscript.app.trip.model.Trip;
 import com.tripscript.app.trip.repository.TripRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,10 +23,14 @@ public class TripService {
     }
 
     public Trip getTrip(Long tripId) {
-        return tripRepository.findById(tripId).orElse(null);
+        return tripRepository.findById(tripId).orElseThrow(() ->
+                new EntityNotFoundException(("Trip with ID " + tripId + " not found.")));
     }
 
     public void deleteTrip(Long tripId) {
+        if (!tripRepository.existsById(tripId)) {
+            throw new EntityNotFoundException("Trip with ID " + tripId + " not found.");
+        }
         tripRepository.deleteById(tripId);
     }
 
@@ -37,17 +42,19 @@ public class TripService {
         trip.setEndDate(tripRequestDto.getEndDate());
         trip.setRating(tripRequestDto.getRating());
         trip.setNotes(tripRequestDto.getNotes());
+
         return tripRepository.save(trip);
     }
 
-    public Trip updateTrip(Long tripId, Trip trip) {
-        Trip existingTrip = tripRepository.findById(tripId).orElseThrow(() -> new
-                RuntimeException("City not found with id " + tripId));
-        existingTrip.setCity(trip.getCity());
-        existingTrip.setNotes(trip.getNotes());
-        existingTrip.setRating(trip.getRating());
-        existingTrip.setStartDate(trip.getStartDate());
-        existingTrip.setEndDate(trip.getEndDate());
+    public Trip updateTrip(Long tripId, TripRequestDto tripRequestDto) {
+        Trip existingTrip = tripRepository.findById(tripId).orElseThrow(() ->
+                new EntityNotFoundException("Trip with ID " + tripId + " not found."));
+        City city = cityService.getCity(tripRequestDto.getCityId());
+        existingTrip.setCity(city);
+        existingTrip.setStartDate(tripRequestDto.getStartDate());
+        existingTrip.setEndDate(tripRequestDto.getEndDate());
+        existingTrip.setRating(tripRequestDto.getRating());
+        existingTrip.setNotes(tripRequestDto.getNotes());
 
         return tripRepository.save(existingTrip);
     }
