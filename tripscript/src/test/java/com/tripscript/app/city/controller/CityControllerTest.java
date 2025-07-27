@@ -155,5 +155,5 @@ public class CityControllerTest {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals("City not found", response.getBody());
     }
-    
+
 }
