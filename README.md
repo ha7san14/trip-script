@@ -38,8 +38,4 @@ TripScript is a Java Spring Boot application built for travel enthusiasts to eff
 * Mockito <br/>
 * Postman (for API testing) <br/>
 
-### Code Quality Tools:
-
-* Checkstyle <br/>
-* PMD (Static Code Analysis) <br/>
 
